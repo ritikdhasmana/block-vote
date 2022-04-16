@@ -1,0 +1,30 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2rem;
+  align-items: center;
+  height: 7vh;
+  z-index: 2;
+}
+.block-logo {
+  font-size: 1.5rem;
+}
+.vote-logo {
+  font-size: 2rem;
+  font-weight: 700;
+}
+.menu {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  grid-gap: 1rem;
+}
+.connect-button {
+  font-size: 1rem;
+  border: 1px solid rgba(235, 233, 233, 0.924);
+  padding: 0.5rem;
+  border-radius: 9%;
+}
+
+.connect-button:hover {
+  cursor: pointer;
+}

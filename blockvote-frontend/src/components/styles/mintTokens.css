@@ -1,0 +1,26 @@
+.notAllowed {
+  text-align: center;
+  margin: auto;
+  margin-top: 20%;
+}
+.Mint-container {
+  margin-top: 10%;
+  /* width: 30%; */
+  text-align: center;
+  align-items: center;
+  /* overflow: hidden;
+  margin-inline: auto; */
+}
+
+.sub-input {
+  margin-top: 1rem;
+  width: 5rem;
+  cursor: pointer;
+}
+.mint-form {
+  margin-inline: auto;
+  margin-top: 2rem;
+}
+.label {
+  margin-inline: 1rem;
+}

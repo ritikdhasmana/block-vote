@@ -1,0 +1,37 @@
+@import url("http://fonts.cdnfonts.com/css/print-clearly");
+@import url("https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Roboto:wght@300&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+:root {
+  ---brad: 0.5em;
+  ---up-col: lime;
+  ---down-col: red;
+  ---bg-col: #121212;
+  ---bg-txt-col: #fff;
+  ---brdr-col: #fff;
+  ---el1-col: #1d1d1d;
+  ---el2-col: #212121;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  font-size: 1.3rem;
+  background-color: var(---bg-col);
+  color: var(---bg-txt-col);
+}
+.inner-body {
+  margin: 0 3rem;
+  margin-bottom: 3rem;
+}
+.notAllowed {
+  margin: auto;
+}

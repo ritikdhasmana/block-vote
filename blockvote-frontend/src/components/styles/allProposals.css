@@ -1,0 +1,142 @@
+.loadingIndic {
+  margin-top: 20rem;
+}
+.proposals-heading {
+  font-size: 3rem;
+  text-align: center;
+  margin-top: 5rem;
+}
+.proposal-list {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 5rem;
+}
+.proposal-card {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  background-color: rgb(47, 47, 47);
+  margin: auto;
+  margin-top: 3rem;
+  border-radius: 15px;
+}
+.proposal-top {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1rem;
+}
+.prop-status {
+  display: flex;
+  text-align: end;
+}
+.ongoing::before {
+  content: "";
+  display: flex;
+  margin: auto;
+  margin-right: 1px;
+  width: 15px;
+  height: 15px;
+  -moz-border-radius: 7.5px;
+  -webkit-border-radius: 7.5px;
+  border-radius: 7.5px;
+  background-color: yellow;
+}
+.passed::before {
+  content: "";
+  display: flex;
+  margin: auto;
+  margin-right: 1px;
+  width: 15px;
+  height: 15px;
+  -moz-border-radius: 7.5px;
+  -webkit-border-radius: 7.5px;
+  border-radius: 7.5px;
+  background-color: green;
+}
+.failed::before {
+  content: "";
+  display: flex;
+  margin: auto;
+  margin-right: 1px;
+  width: 15px;
+  height: 15px;
+  -moz-border-radius: 7.5px;
+  -webkit-border-radius: 7.5px;
+  border-radius: 7.5px;
+  background-color: red;
+}
+.prop-description {
+  text-align: center;
+  padding: 1rem;
+}
+.prop-votes-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1rem;
+}
+.upvote-container,
+.downvote-container {
+  width: 30%;
+  margin: auto;
+  align-items: center;
+  text-align: center;
+}
+.numvotes {
+  font-size: 3rem;
+}
+.prop-footer-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin: auto;
+  justify-content: space-between;
+  padding: 1rem;
+}
+.creator-container {
+  display: flex;
+  width: 100%;
+  margin: auto;
+  align-items: center;
+  text-align: center;
+}
+.prop-creator {
+  display: flex;
+}
+.createdAt-container,
+.duration-container,
+.cast-vote-container,
+.voting-buttons {
+  display: flex;
+  flex-direction: row;
+}
+.cast-vote-container,
+.voting-buttons {
+  width: 100%;
+  padding: 1rem;
+}
+.voting-not-allowed {
+  width: 100%;
+  text-align: center;
+}
+.voting-buttons {
+  justify-content: space-between;
+}
+.upvote-btn,
+.downvote-btn {
+  margin: auto;
+  width: 30%;
+  z-index: 2;
+  align-items: center;
+  text-align: center;
+  border: solid 1px white;
+  border-radius: 5px;
+}
+.upvote-btn:hover,
+.downvote-btn:hover {
+  cursor: pointer;
+  color: black;
+  background-color: rgb(179, 178, 178);
+}
