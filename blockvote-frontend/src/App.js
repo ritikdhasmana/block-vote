@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import Header from "./components/header";
 import ContractAddress from "./contractData/contracts-address.json";
 import ContractAbi from "./contractData/abi.json";
+import Header from "./components/header";
 import { BrowserRouter as Router, useRoutes } from "react-router-dom";
 import AllProposals from "./components/allProposals";
 import CreateProposal from "./components/createProposal";
 import MintTokens from "./components/mintTokens";
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); //user login
   const [voteContract, setVoteContract] = useState(null);
   const [userAddress, setUserAddress] = useState("");
   const [userTokenBalance, setUserTokenBalance] = useState(0);
@@ -17,7 +17,8 @@ function App() {
   const [contractOwner, setContractOwner] = useState("0x0");
   const [isLoading, setIsLoading] = useState(true);
   const { ethereum } = window;
-
+  const [ownerWallet, setOwnerWallet] = useState(""); //owner wallet for on chain prop creation and changing its status when it expires
+  const [totalProposals, setTotalProposals] = useState(0);
   const contract = ContractAddress.Token;
   const abi = ContractAbi.abi;
   //fetches current ethereum address to check if we are still using the same address or not
@@ -50,8 +51,20 @@ function App() {
   ethereum.on("accountsChanged", function (accounts) {
     getCurrentAccount();
   });
+
+  const getOwnerWallet = async () => {
+    const provider = new ethers.providers.JsonRpcProvider(
+      process.env.REACT_APP_ALCHEMY_API_URL
+    );
+    const privateKey = process.env.REACT_APP_PRIVATEKEY;
+    var wallet = new ethers.Wallet(privateKey, provider);
+    setOwnerWallet(wallet);
+    console.log("owner address: ", wallet.address);
+  };
+
   useEffect(() => {
     getCurrentAccount();
+    getOwnerWallet();
   }, []);
 
   const login = async () => {
@@ -67,6 +80,7 @@ function App() {
       });
   };
 
+  // for contract
   useEffect(() => {
     const fetchNFTMetadata = async () => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -85,6 +99,8 @@ function App() {
       const alltokens = await voteContract.totalTokenAmount();
       setTotalTokenSupply(alltokens);
       setIsLoading(false);
+      const allProp = await voteContract.totalProposals();
+      setTotalProposals(allProp.toNumber());
     };
 
     if (userAddress) {
@@ -104,6 +120,7 @@ function App() {
             account={userAddress}
             userBal={userTokenBalance}
             owner={contractOwner}
+            ownerWallet={ownerWallet}
             totalTokens={totalTokenSupply}
           />
         ),
@@ -112,11 +129,14 @@ function App() {
         path: "/createProposal",
         element: (
           <CreateProposal
+            voteContract={voteContract}
             isLoggedIn={isLoggedIn}
             account={userAddress}
             userBal={userTokenBalance}
             owner={contractOwner}
             isLoading={isLoading}
+            ownerWallet={ownerWallet}
+            totalProposals={totalProposals}
           />
         ),
       },

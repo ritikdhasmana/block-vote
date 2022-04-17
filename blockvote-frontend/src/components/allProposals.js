@@ -4,10 +4,12 @@ import { useState } from "react";
 import Moralis from "moralis";
 import LoadingIndicator from "./LoadingIndicator";
 import "./styles/allProposals.css";
+
+import { ethers } from "ethers";
+import ContractAddress from "../contractData/contracts-address.json";
+import ContractAbi from "../contractData/abi.json";
+
 function AllProposals(props) {
-  const dateConverter = (date) => {
-    return date?.toISOString("MM-DD-YYYY").split("T")[0];
-  };
   const [allProposals, setAllProposals] = useState();
   const getAllProps = async () => {
     const AllProps = Moralis.Object.extend("Proposals");
@@ -17,10 +19,27 @@ function AllProposals(props) {
     setAllProposals(allProps);
     return allProps;
   };
+
+  //to change status on chain
+  const allPropSetStatus = async () => {
+    for (let i = 0; i < allProposals.length; i++) {
+      let prop = allProposals[i];
+      if (!isNotExpired(prop)) {
+        await changeStatusOnChain(prop);
+      }
+    }
+  };
   useEffect(() => {
     getAllProps();
+    allPropSetStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const dateConverter = (date) => {
+    return date?.toISOString("MM-DD-YYYY").split("T")[0];
+  };
+
+  //check if prop expired
   const isNotExpired = (prop) => {
     const createdTime = parseInt(prop.get("timeCreated"));
     const duration = parseInt(prop.get("duration"));
@@ -47,7 +66,47 @@ function AllProposals(props) {
     getAllProps();
   };
 
+  //changes prop status on chain
+  const changeStatusOnChain = async (prop) => {
+    console.log(props.ownerWallet);
+    const signer = props.ownerWallet.connect();
+    const voteContract = new ethers.Contract(
+      ContractAddress.Token,
+      ContractAbi.abi,
+      signer
+    );
+
+    let contractWithSigner = voteContract.connect(props.ownerWallet);
+    let txn = await contractWithSigner.checkProposalStatus(
+      parseInt(prop.get("pid"))
+    );
+    console.log("status: ", txn.toString(), " ", parseInt(prop.get("pid")));
+    if (txn.toString() === "ongoing") {
+      let newstatus = "";
+      if (
+        prop.get("requiredNumPpl") > prop.get("voterCount") ||
+        prop.get("requiredWeightPercent") > prop.get("curWeightage") ||
+        prop.get("requiredInFavor") > prop.get("upVotes")
+      )
+        newstatus = "failed";
+      else {
+        newstatus = "passed";
+      }
+      await contractWithSigner.changeStatus(
+        parseInt(prop.get("pid")),
+        newstatus
+      );
+
+      let txn = await contractWithSigner.checkProposalStatus(
+        parseInt(prop.get("pid"))
+      );
+      console.log("newstatus: ", txn);
+    }
+  };
+
+  //checks is prop passed or failed
   const checkIfPassed = (prop) => {
+    // changeStatusOnChain(prop);
     if (
       prop.get("requiredNumPpl") > prop.get("voterCount") ||
       prop.get("requiredWeightPercent") > prop.get("curWeightage") ||
@@ -93,6 +152,7 @@ function AllProposals(props) {
     );
   };
 
+  //renders proposal card;
   const renderProp = (prop, index) => {
     return (
       <div className="proposal-card" key={index}>
@@ -146,10 +206,6 @@ function AllProposals(props) {
       </div>
     );
   };
-
-  // const renderExpired = (prop, index) => {
-  //   return <div>rr</div>;
-  // };
 
   return (
     <>

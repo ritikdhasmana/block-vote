@@ -18,6 +18,14 @@ contract BlockVote is ERC20{
         _;
     }
 
+    struct Proposal{
+        uint256 pid;
+        string status;
+    }
+    mapping(uint256 => Proposal) public allProposals;
+    uint256 public totalProp=0;
+
+
     function mintTokens(address account, uint256 amount)public isOwner(){
         _mint(account, amount);
         totalTokenSupply += amount;
@@ -43,5 +51,23 @@ contract BlockVote is ERC20{
     function transferOwnership(address account) public isOwner(){
         owner = account;
     }
-    
+
+    function createNewProposal(uint _pid, string calldata _status)external{
+        require(userBalance()> 0 || msg.sender== owner, "not allowed");
+        totalProp++;
+        Proposal memory newProp;
+        newProp.pid = _pid;
+        newProp.status =  _status;
+        allProposals[_pid] = newProp;
+    }
+
+    function checkProposalStatus(uint _pid) external view returns(string memory) {
+        return allProposals[_pid].status;
+    }
+    function changeStatus(uint _pid,string calldata _status) external isOwner(){
+        allProposals[_pid].status = _status;
+    }
+    function totalProposals()public view returns(uint256){
+        return totalProp;
+    }
 }

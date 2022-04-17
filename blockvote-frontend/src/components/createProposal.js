@@ -2,22 +2,42 @@ import React from "react";
 import { useState } from "react";
 import Moralis from "moralis";
 import "./styles/createProposal.css";
+import { ethers } from "ethers";
+import ContractAddress from "../contractData/contracts-address.json";
+import ContractAbi from "../contractData/abi.json";
 function CreateProposal(props) {
   const [proposal, setProposal] = useState("");
   const [numPpl, setNumPpl] = useState(0);
   const [weightPercent, setWeightPercent] = useState(0);
   const [inFavor, setInFavor] = useState(0);
   const [duration, setDuration] = useState(300000);
+
+  const createProposalOnChain = async () => {
+    console.log(props.ownerWallet);
+    const signer = props.ownerWallet.connect();
+    const voteContract = new ethers.Contract(
+      ContractAddress.Token,
+      ContractAbi.abi,
+      signer
+    );
+    let contractWithSigner = voteContract.connect(props.ownerWallet);
+    await contractWithSigner.createNewProposal(
+      props.totalProposals + 1,
+      "ongoing"
+    );
+  };
   const createNewProposal = async () => {
     console.log(proposal);
     console.log(numPpl);
     console.log(weightPercent);
     console.log(inFavor);
+    console.log(props.totalProposals);
     console.log(duration);
 
     try {
       const Proposals = Moralis.Object.extend("Proposals");
       let Proposal = new Proposals();
+      Proposal.set("pid", (props.totalProposals + 1).toString());
       Proposal.set("description", proposal);
       Proposal.set("timeCreated", Date.now());
       Proposal.set("duration", duration.toString());
@@ -32,7 +52,7 @@ function CreateProposal(props) {
       Proposal.set("voterList", ["0x0"]);
       await Proposal.save();
       alert("Proposal created!");
-      console.log("Proposal sent from : ", Proposal);
+      await createProposalOnChain();
     } catch (error) {
       console.log(error);
       alert("error...retry again !");
